@@ -1,24 +1,12 @@
-const Map = require('../models/map')
+const MapInfo = require('../models/mapInfo')
 
 exports.getMaps = (req, res, next) => {
-	Map.find()
+	const user = req.params.user
+	MapInfo.find({ belongsTo: user })
 		.then(maps => {
 			res.status(200).json(maps)
 		})
 		.catch(err => console.log)
-}
-
-exports.getMap = (req, res, next) => {
-	const user = req.params.user
-	const mapId = req.params.mapId
-	console.log('map id', mapId)
-	Map.findOne({ id: mapId, belongsTo: user })
-		.then(map => {
-			if (!map) throw new Error()
-
-			res.status(200).json(map)
-		})
-		.catch(err => console.log(err))
 }
 
 exports.createMap = (req, res, next) => {
@@ -26,13 +14,19 @@ exports.createMap = (req, res, next) => {
 	const id = req.body.id
 	const type = req.body.type
 	const belongsTo = req.body.belongsTo
-	const data = req.body.data
+	const places = req.body.places
+	const title = req.body.title
+	const description = req.body.description
+	const basemap = req.body.basemap
 
-	const map = new Map({
+	const map = new MapInfo({
 		id: id,
 		type: type,
 		belongsTo: belongsTo,
-		data: data,
+		places: places,
+		title: title,
+		description: description,
+		basemap: basemap,
 	})
 
 	map
@@ -48,16 +42,22 @@ exports.createMap = (req, res, next) => {
 }
 
 exports.updateMap = (req, res, next) => {
-	const user = req.params.user
 	const mapId = req.params.mapId
 
-	const data = req.body.data
+	const places = req.body.places
+	const title = req.body.title
+	const description = req.body.description
+	const basemap = req.body.basemap
 
-	Map.findOne({ id: mapId, belongsTo: user })
+	MapInfo.findOne({ id: mapId })
 		.then(map => {
 			if (!map) throw new Error()
 
-			map.data = data
+			map.places = places
+			map.title = title
+			map.description = description
+			map.basemap = basemap
+
 			return map.save()
 		})
 		.then(result => res.status(200).json(result))
@@ -65,12 +65,11 @@ exports.updateMap = (req, res, next) => {
 }
 
 exports.removeMap = (req, res, next) => {
-	const user = req.params.user
 	const mapId = req.params.mapId
 
-	Map.findOne({ id: mapId, belongsTo: user })
+	MapInfo.findOne({ id: mapId })
 		.then(map => {
-			return Map.findOneAndDelete({ id: mapId })
+			return MapInfo.findOneAndDelete({ id: mapId })
 		})
 		.then(result => {
 			console.log(result)
