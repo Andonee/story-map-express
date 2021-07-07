@@ -11,7 +11,7 @@ const app = express()
 app.use(
 	cors({
 		origin: true,
-		allowedHeaders: ['Content-Type', 'X-Requested-With'],
+		allowedHeaders: ['Content-Type', 'X-Requested-With', 'Authorization'],
 		maxAge: 10 * 3600,
 	})
 )
@@ -22,7 +22,7 @@ app.use(morgan('combined'))
 app.use((req, res, next) => {
 	res.setHeader('Access-Control-Allow-Origin', '*')
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
-	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type Authorization')
 	next()
 })
 

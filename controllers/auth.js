@@ -44,7 +44,9 @@ exports.login = (req, res, next) => {
 				throw new Error()
 			}
 
-			const token = jwt.sign({ login: login }, 'jkldufioszdlknkldshfkhslfd')
+			const token = jwt.sign({ login: login }, 'jkldufioszdlknkldshfkhslfd', {
+				expiresIn: 60 * 60 * 4,
+			})
 
 			res.status(200).json({ user: login, token: token })
 		})
